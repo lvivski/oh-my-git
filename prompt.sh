@@ -93,9 +93,11 @@ function build_prompt {
 			is_on_a_tag=false
 			if [[ -n $tag_at_current_commit ]]; then is_on_a_tag=true; fi
 
-			commits_diff=$(git log --pretty=oneline --topo-order --left-right ${current_commit_hash}...${upstream} 2> /dev/null)
-			commits_ahead=$(grep -c ^\< <<< "$commits_diff")
-			commits_behind=$(grep -c ^\> <<< "$commits_diff")
+			if [[ $has_upstream == true ]]; then
+				commits_diff=$(git log --pretty=oneline --topo-order --left-right ${current_commit_hash}...${upstream} 2> /dev/null)
+				commits_ahead=$(grep -c ^\< <<< "$commits_diff")
+				commits_behind=$(grep -c ^\> <<< "$commits_diff")
+			fi
 
 			has_diverged=false
 			if [[ $commits_ahead -gt 0 && $commits_behind -gt 0 ]]; then has_diverged=true; fi
